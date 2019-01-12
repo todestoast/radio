@@ -7,9 +7,17 @@ get_names='select name from stations where name like "%'
 get_names+="$1"
 get_names+='%"'
 
+get_random='SELECT url FROM stations ORDER BY RANDOM() LIMIT 1'
 
-url=$(./sqlite3 radio.db "$get_url")
-if [ ${#myvar}  -eq 0 ]; then
+if [[ $1 == "random" ]]; then
+	url=$(./sqlite3 radio.db "$get_random")
+else
+	url=$(./sqlite3 radio.db "$get_url")
+fi
+
+
+#if no url was found
+if [ ${#url}  -eq 0 ]; then
         echo "No station for $1 found :("
         exit 0
 fi
@@ -25,3 +33,4 @@ if [ $(echo "$url" | wc -l) -gt 1 ]; then
 else
 	mplayer -quiet $url 2>&1
 fi
+exit 0
