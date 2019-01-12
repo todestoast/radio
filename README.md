@@ -2,14 +2,34 @@
 Bashscript-based radio station player
 
 # usage
-<code>radio <i>stationname/part of the stationname</i></code>
+usage: radio <stationname>
+example: radio kexp
 
-example:
-<code>radio kexp</code>
+-h --help
+displays help menu
 
-also possible:
-<code>radio random</code>
+-l --list <i>search</i>
+search radiostations for specific word. This doesn't search for a stationname but for a tag.
+example: <code>radio -l ambient</code>
+use <code>radio <i>search</i> random</code> to randomly play a station that matches the search
+example: <code>radio -l ambient random</code>
 
-# requirements
+-la --list-all
+list all station Names (Caution: There might be a lot!)
+
+# installation
+## easy installation
+please check 'requirements' before running any command
+
+1. <code>git clone https://github.com/todestoast/radio</code>
+2. <code>cd radio</code>
+3. <code>chmod +x installer.sh</code>
+4. <code>./installer.sh</code>
+
+# requirements for installer.sh
+- git
+- gcc
+
+#requirements for running the software
 - mplayer
-- sqlite3 (you can use the installer.sh script attached. It will compile the cli version of sqlite3 to ~/.radio. Please mind: gcc needed!)
+-sqlite3 (if you install the software with the installer script sqlite is already installed)
