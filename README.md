@@ -9,10 +9,10 @@ example: radio kexp
 displays help menu
 
 -l --list <i>search</i>
-search radiostations for specific word. This doesn't search for a stationname but for a tag.
-example: <code>radio -l ambient</code>
-use <code>radio <i>search</i> random</code> to randomly play a station that matches the search
-example: <code>radio -l ambient random</code>
+search radiostations for specific word. This doesn't search for a stationname but for a tag.<br />
+example: <code>radio -l ambient</code> <br />
+use <code>radio <i>search</i> random</code> to randomly play a station that matches the search<br />
+example: <code>radio -l ambient random</code><br />
 
 -la --list-all
 list all station Names (Caution: There might be a lot!)
@@ -33,10 +33,12 @@ please check 'requirements' before running any command
 3. compile sqlite3 cli tool to this directory (see https://sqlite.org/howtocompile.html)
 4. copy radio to /usr/local/bin
 
-# requirements for installer.sh
+# requirements
+## for installer.sh
 - git
 - gcc
+- unzip
 
-# requirements for running the software
+## for running the software
 - mplayer
 -sqlite3 (if you install the software with the installer script sqlite is already installed)

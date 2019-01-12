@@ -13,4 +13,4 @@ mv README.md radio.db $path
 sudo mv radio /usr/local/bin
 sudo chmod +x /usr/local/bin/radio
 cd ..
-rm -r radio
+sudo rm -r radio
