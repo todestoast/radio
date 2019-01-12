@@ -26,10 +26,17 @@ please check 'requirements' before running any command
 3. <code>chmod +x installer.sh</code>
 4. <code>./installer.sh</code>
 
+## manual installation
+0. checkout the code of this repository
+1. create ~/.radio
+2. copy radio.db to this directory
+3. compile sqlite3 cli tool to this directory (see https://sqlite.org/howtocompile.html)
+4. copy radio to /usr/local/bin
+
 # requirements for installer.sh
 - git
 - gcc
 
-#requirements for running the software
+# requirements for running the software
 - mplayer
 -sqlite3 (if you install the software with the installer script sqlite is already installed)
