@@ -12,4 +12,4 @@ also possible:
 
 # requirements
 - mplayer
-- sqlite3 (you can use the installer.sh script attached. It will compile the cli version of sqlite3 to ~/.radio)
+- sqlite3 (you can use the installer.sh script attached. It will compile the cli version of sqlite3 to ~/.radio. Please mind: gcc needed!)
