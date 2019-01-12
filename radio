@@ -1,0 +1,27 @@
+#!/bin/bash
+get_url='select url from stations where name like "%'
+get_url+="$1"
+get_url+='%"'
+
+get_names='select name from stations where name like "%'
+get_names+="$1"
+get_names+='%"'
+
+
+url=$(./sqlite3 radio.db "$get_url")
+if [ ${#myvar}  -eq 0 ]; then
+        echo "No station for $1 found :("
+        exit 0
+fi
+
+#if string contains newlines therfore multiple urls
+if [ $(echo "$url" | wc -l) -gt 1 ]; then
+	#select names
+	names=$(./sqlite3 radio.db "$get_names")
+	echo "Multiple possible stations. Please specify!"
+	echo "-------------------------------------------"
+	echo "$names"
+	exit 0;
+else
+	mplayer -quiet $url 2>&1
+fi
