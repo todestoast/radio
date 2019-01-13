@@ -2,8 +2,8 @@
 Bashscript-based radio station player
 
 # usage
-usage: radio <stationname>
-example: radio kexp
+usage: <code>radio <i>stationname</i></code>
+example: <code>radio kexp</code>
 
 -h --help
 displays this help menu
