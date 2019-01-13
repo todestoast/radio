@@ -117,7 +117,10 @@ case $1 in
 	-h|--help)
 		echo "usage: radio <stationname>"
 		echo "example: radio kexp"
-		echo ""
+		echo
+		echo "-b --backup"
+		echo "play backup stream (if exists). Might help if the primary streaming URL is not working"
+		echo
 		echo "-h --help"
 		echo "displays this help menu"
 		echo
@@ -138,9 +141,6 @@ case $1 in
 		echo "example: radio -r beirut"
 		echo "use 'radio -r <search> random' to randomly play a station for that region"
 		echo "example: radio -r seattle random"
-		echo
-		echo "-b --backup"
-		echo "play backup stream (if exists). Might help if the primary streaming URL is not working"
 		exit 0
 		;;
 esac

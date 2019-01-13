@@ -5,6 +5,9 @@ Bashscript-based radio station player
 usage: <code>radio <i>stationname</i></code><br />
 example: <code>radio kexp</code>
 
+-b --backup<br />
+play backup stream (if exists). Might help if the primary streaming URL is not working
+
 -h --help<br />
 displays this help menu
 
@@ -25,6 +28,8 @@ list all radio stations for specific region<br />
 example: <code>radio -r beirut</code><br />
 use <code>radio -r <i>search</i> random</code> to randomly play a station for that region<br />
 example: <code>radio -r seattle random</code><br />
+
+
 
 # installation
 ## easy installation
