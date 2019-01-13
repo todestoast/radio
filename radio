@@ -32,6 +32,7 @@ get_tag='select name from stations where tags like "%'
 get_tag+="$2"
 get_tag+='%"'
 
+
 get_all_location='select distinct location from stations'
 
 if [ -f ${path}/db.md5 ]; then
@@ -153,6 +154,13 @@ if [ $(echo "$url" | wc -l) -gt 1 ]; then
 	echo "$names"
 	exit 1;
 else
-	mplayer -quiet $url 2>&1
+	get_name_for_url='select name from stations where url="'
+	get_name_for_url+=$url
+	get_name_for_url+='"'
+	name=$(${path}/sqlite3 ${path}/radio.db "$get_name_for_url")
+	echo "Playing $name"
+	echo
+	mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
+
 fi
 exit 0
