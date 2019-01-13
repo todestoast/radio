@@ -10,9 +10,9 @@ displays this help menu
 
 -l --list <search><br />
 search radiostations for specific word. This doesn't search for a stationname but for a tag.<br />
-example: radio -l ambient<br />
-use 'radio -l <search> random' to randomly play a station that matches the search<br />
-example: radio -l ambient random<br />
+example: <code>radio -l ambient</code><br />
+use <code>radio -l <i>search</i> random</code> to randomly play a station that matches the search<br />
+example: <code>radio -l ambient random</code><br />
 
 -la --list-all
 list all station Names (Caution: There might be a lot!)
@@ -22,9 +22,9 @@ list all regions for radio stations
 
 -r --region<br />
 list all radio stations for specific region<br />
-example: radio -r beirut<br />
-use 'radio -r <search> random' to randomly play a station for that region<br />
-example: radio -r seattle random<br />
+example: <code>radio -r beirut</code><br />
+use <code>radio -r <i>search</i> random</code> to randomly play a station for that region<br />
+example: <code>radio -r seattle random</code><br />
 
 # installation
 ## easy installation
