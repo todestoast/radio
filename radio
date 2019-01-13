@@ -33,6 +33,7 @@ if [ -f ${path}/db.md5 ]; then
 		rm radio.db
 		wget https://github.com/todestoast/radio/raw/master/radio.db
 		echo "new stations added"
+		rm /tmp/db.md5
 	fi
 else
 	echo "Missing file. Downloading..."
