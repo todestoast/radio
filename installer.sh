@@ -9,7 +9,7 @@ gcc shell.c sqlite3.c -lpthread -ldl -o sqlite3
 mkdir $path
 mv sqlite3 $path
 cd ..
-mv README.md radio.db $path
+mv README.md db.md5 radio.db $path
 sudo mv radio /usr/local/bin
 sudo chmod +x /usr/local/bin/radio
 cd ..

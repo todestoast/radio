@@ -29,7 +29,7 @@ please check 'requirements' before running any command
 ## manual installation
 0. checkout the code of this repository
 1. create ~/.radio
-2. copy radio.db to this directory
+2. copy radio.db and db.md5 to this directory
 3. compile sqlite3 cli tool to this directory (see https://sqlite.org/howtocompile.html)
 4. copy radio to /usr/local/bin
 
