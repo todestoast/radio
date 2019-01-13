@@ -11,10 +11,20 @@ get_names+="$1"
 get_names+='%"'
 
 get_random='select url from stations order by random() limit 1'
+
 get_random_for_tag='select url from stations where tags like "%'
 get_random_for_tag+="$2"
-get_random_for_tag+='%" '
+get_random_for_tag+='%"'
 get_random_for_tag+='order by random() limit 1'
+
+get_random_for_loc='select url from stations where location like "%'
+get_random_for_loc+="$2"
+get_random_for_loc+='%"'
+get_random_for_loc+='order by random() limit 1'
+
+get_stations_for_loc='select name from stations where location like "%'
+get_stations_for_loc+="$2"
+get_stations_for_loc+='%"'
 
 get_stations='select name from stations'
 
@@ -22,8 +32,11 @@ get_tag='select name from stations where tags like "%'
 get_tag+="$2"
 get_tag+='%"'
 
+get_all_location='select distinct location from stations'
+
 if [ -f ${path}/db.md5 ]; then
 	echo "checking for new stations..."
+	echo
 	cd /tmp/
 	wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
 	if [ $(diff /tmp/db.md5 ${path}/db.md5 | wc -l) -gt 1 ]; then
@@ -69,6 +82,24 @@ case $1 in
 			fi
 		fi
 	;;
+	-lr|--list-regions)
+		location=$(${path}/sqlite3 ${path}/radio.db "$get_all_location")
+		echo "$location"
+		exit 0;
+	;;
+	-r|--region)
+	if [ -z "$2" ]; then
+		echo "Pass a region you want to search for"
+		exit 1;
+	fi
+	if [[ "$3" == "random" ]]; then
+		url=$(${path}/sqlite3 ${path}/radio.db "$get_random_for_loc")
+	else
+		stations=$(${path}/sqlite3 ${path}/radio.db "$get_stations_for_loc")
+		echo "$stations"
+		exit 0
+	fi
+	;;
 	-h|--help)
 		echo "usage: radio <stationname>"
 		echo "example: radio kexp"
@@ -79,11 +110,20 @@ case $1 in
 		echo "-l --list <search>"
 		echo "search radiostations for specific word. This doesn't search for a stationname but for a tag."
 		echo "example: radio -l ambient"
-		echo "use 'radio <search> random' to randomly play a station that matches the search"
+		echo "use 'radio -l <search> random' to randomly play a station that matches the search"
 		echo "example: radio -l ambient random"
 		echo
 		echo "-la --list-all"
 		echo "list all station Names (Caution: There might be a lot!)"
+		echo
+		echo "-lr --list-regions"
+		echo "list all regions for radio stations"
+		echo
+		echo "-r --region"
+		echo "list all radio stations for specific region"
+		echo "example: radio -r beirut"
+		echo "use 'radio -r <search> random' to randomly play a station for that region"
+		echo "example: radio -r seattle random"
 		exit 0
 		;;
 esac

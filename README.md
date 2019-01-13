@@ -6,16 +6,25 @@ usage: radio <stationname>
 example: radio kexp
 
 -h --help
-displays help menu
+displays this help menu
 
--l --list <i>search</i>
+-l --list <search><br />
 search radiostations for specific word. This doesn't search for a stationname but for a tag.<br />
-example: <code>radio -l ambient</code> <br />
-use <code>radio <i>search</i> random</code> to randomly play a station that matches the search<br />
-example: <code>radio -l ambient random</code><br />
+example: radio -l ambient<br />
+use 'radio -l <search> random' to randomly play a station that matches the search<br />
+example: radio -l ambient random<br />
 
 -la --list-all
 list all station Names (Caution: There might be a lot!)
+
+-lr --list-regions
+list all regions for radio stations
+
+-r --region<br />
+list all radio stations for specific region<br />
+example: radio -r beirut<br />
+use 'radio -r <search> random' to randomly play a station for that region<br />
+example: radio -r seattle random<br />
 
 # installation
 ## easy installation
