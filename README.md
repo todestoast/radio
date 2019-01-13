@@ -2,10 +2,10 @@
 Bashscript-based radio station player
 
 # usage
-usage: <code>radio <i>stationname</i></code>
+usage: <code>radio <i>stationname</i></code><br />
 example: <code>radio kexp</code>
 
--h --help
+-h --help<br />
 displays this help menu
 
 -l --list <search><br />
@@ -14,10 +14,10 @@ example: <code>radio -l ambient</code><br />
 use <code>radio -l <i>search</i> random</code> to randomly play a station that matches the search<br />
 example: <code>radio -l ambient random</code><br />
 
--la --list-all
+-la --list-all<br />
 list all station Names (Caution: There might be a lot!)
 
--lr --list-regions
+-lr --list-regions<br />
 list all regions for radio stations
 
 -r --region<br />
