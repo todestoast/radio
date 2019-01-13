@@ -6,6 +6,10 @@ get_url='select url from stations where name like "%'
 get_url+="$1"
 get_url+='%"'
 
+get_url2='select url2 from stations where name like "%'
+get_url2+="$2"
+get_url2+='%"'
+
 get_names='select name from stations where name like "%'
 get_names+="$1"
 get_names+='%"'
@@ -107,6 +111,9 @@ case $1 in
 		exit 0
 	fi
 	;;
+	-b|--backup)
+		url=$(${path}/sqlite3 ${path}/radio.db "$get_url2")
+	;;
 	-h|--help)
 		echo "usage: radio <stationname>"
 		echo "example: radio kexp"
@@ -131,6 +138,9 @@ case $1 in
 		echo "example: radio -r beirut"
 		echo "use 'radio -r <search> random' to randomly play a station for that region"
 		echo "example: radio -r seattle random"
+		echo
+		echo "-b --backup"
+		echo "play backup stream (if exists). Might help if the primary streaming URL is not working"
 		exit 0
 		;;
 esac
@@ -141,8 +151,13 @@ fi
 
 #if no url was found
 if [ ${#url}  -eq 0 ]; then
+	if [[ "$1" == "-b" || "$1" == "--backup" ]]; then
+		echo "No backup stream found :("
+		exit 1
+	else
         echo "No station for $1 found :("
         exit 1
+	fi
 fi
 
 #if string contains newlines therfore multiple urls
@@ -161,6 +176,5 @@ else
 	echo "Playing $name"
 	echo
 	mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
-
 fi
 exit 0
