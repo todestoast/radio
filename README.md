@@ -56,4 +56,3 @@ please check 'requirements' before running any command
 ## for running the software
 - mplayer
 - sqlite3 (if you install the software with the installer script sqlite is already installed)
-- datecalc
