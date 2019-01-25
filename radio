@@ -1,6 +1,6 @@
 #!/bin/bash
-path=~/.radio
-#path=~/programs/own/radio
+#path=~/.radio
+path=~/programs/own/radio
 
 get_url='select url from stations where name like "%'
 get_url+="$1"
@@ -35,6 +35,9 @@ get_stations='select name from stations'
 get_tag='select name from stations where tags like "%'
 get_tag+="$2"
 get_tag+='%"'
+
+get_recently_played='select name from history order by rowid desc limit 9'
+get_most_played='select name from history order by playtime desc limit 9'
 
 get_all_location='select distinct location from stations'
 
@@ -100,6 +103,11 @@ case $1 in
 		echo "$location"
 		exit 0;
 	;;
+	-rp|--recently-played)
+	history=$(${path}/sqlite3 ${path}/radio.db "$get_recently_played")
+	echo "$history"
+	exit 0
+	;;
 	-r|--region)
 	if [ -z "$2" ]; then
 		echo "Pass a region you want to search for"
@@ -115,6 +123,11 @@ case $1 in
 	;;
 	-b|--backup)
 		url=$(${path}/sqlite3 ${path}/radio.db "$get_url2")
+	;;
+	-mp|--most-played)
+		played=$(${path}/sqlite3 ${path}/radio.db "$get_most_played")
+		echo "$played"
+		exit 0
 	;;
 	-h|--help)
 		echo "usage: radio <stationname>"
@@ -138,11 +151,17 @@ case $1 in
 		echo "-lr --list-regions"
 		echo "list all regions for radio stations"
 		echo
+		echo "-mp --most-played"
+		echo "lists the top 10 most played radio stations measured by duration of playing (most played first)"
+		echo
 		echo "-r --region"
 		echo "list all radio stations for specific region"
 		echo "example: radio -r beirut"
 		echo "use 'radio -r <search> random' to randomly play a station for that region"
 		echo "example: radio -r seattle random"
+		echo
+		echo "-rp --recently-played"
+		echo "list 10 last played stations (newest first)"
 		exit 0
 		;;
 esac
@@ -175,8 +194,18 @@ else
 	get_name_for_url+=$url
 	get_name_for_url+='"'
 	name=$(${path}/sqlite3 ${path}/radio.db "$get_name_for_url")
+	echo "$name" > ${path}/.frequentlyplayed
 	echo "Playing $name"
 	echo
 	mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
 fi
+end=$(date +%s)
+playtime=$((($end-$today)*60))
+set_history='insert into history values('
+set_history+="'$name'"
+set_history+=','
+set_history+=$playtime
+set_history+=')'
+${path}/sqlite3 ${path}/radio.db "$set_history"
+
 exit 0
