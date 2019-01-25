@@ -1,6 +1,6 @@
 #!/bin/bash
-#path=~/.radio
-path=~/programs/own/radio
+path=~/.radio
+#path=~/programs/own/radio
 
 get_url='select url from stations where name like "%'
 get_url+="$1"
