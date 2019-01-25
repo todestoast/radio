@@ -23,12 +23,17 @@ list all station Names (Caution: There might be a lot!)
 -lr --list-regions<br />
 list all regions for radio stations
 
+-mp --most-played
+lists the top 10 most played radio stations measured by duration of playing (most played first)
+
 -r --region<br />
 list all radio stations for specific region<br />
 example: <code>radio -r beirut</code><br />
 use <code>radio -r <i>search</i> random</code> to randomly play a station for that region<br />
 example: <code>radio -r seattle random</code><br />
 
+-rp --recently-played
+list 10 last played stations (newest first)
 
 
 # installation
