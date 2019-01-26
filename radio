@@ -194,13 +194,12 @@ else
 	get_name_for_url+=$url
 	get_name_for_url+='"'
 	name=$(${path}/sqlite3 ${path}/radio.db "$get_name_for_url")
-	echo "$name" > ${path}/.frequentlyplayed
 	echo "Playing $name"
 	echo
 	mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
 fi
 end=$(date +%s)
-playtime=$((($end-$today)*60))
+playtime=$((($end-$today)/60))
 set_history='insert into history values('
 set_history+="'$name'"
 set_history+=','
