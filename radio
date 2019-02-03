@@ -132,6 +132,7 @@ case $1 in
 	-h|--help)
 		echo "usage: radio <stationname>"
 		echo "example: radio kexp"
+		echo "also possible: radio random"
 		echo
 		echo "-b --backup"
 		echo "play backup stream (if exists). Might help if the primary streaming URL is not working"

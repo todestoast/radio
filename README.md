@@ -4,6 +4,7 @@ Bashscript-based radio station player
 # usage
 usage: <code>radio <i>stationname</i></code><br />
 example: <code>radio kexp</code>
+Also possible: <code>radio random</code>
 
 -b --backup<br />
 play backup stream (if exists). Might help if the primary streaming URL is not working
