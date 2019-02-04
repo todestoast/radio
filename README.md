@@ -3,7 +3,9 @@ Bashscript-based radio station player
 
 # usage
 usage: <code>radio <i>stationname</i></code><br />
-example: <code>radio kexp</code>
+example: <code>radio kexp</code><br />
+Or use the unique ID of every station: <code>radio <i>ID</i></code><br />
+To get the ID for example search for a tag.<br /><br />
 Also possible: <code>radio random</code>
 
 -b --backup<br />

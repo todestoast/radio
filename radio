@@ -6,6 +6,12 @@ get_url='select url from stations where name like "%'
 get_url+="$1"
 get_url+='%"'
 
+get_url_for_id='select url from stations where rowid='
+get_url_for_id+=$1
+
+get_url2_for_id='select url2 from stations where rowid='
+get_url2_for_id+=$1
+
 get_url2='select url2 from stations where name like "%'
 get_url2+="$2"
 get_url2+='%"'
@@ -13,6 +19,10 @@ get_url2+='%"'
 get_names='select name from stations where name like "%'
 get_names+="$1"
 get_names+='%"'
+
+get_names_with_id='select ROWID, name from stations where name like "%'
+get_names_with_id+="$1"
+get_names_with_id+='%"'
 
 get_random='select url from stations order by random() limit 1'
 
@@ -30,9 +40,9 @@ get_stations_for_loc='select name from stations where location like "%'
 get_stations_for_loc+="$2"
 get_stations_for_loc+='%"'
 
-get_stations='select name from stations'
+get_stations='select ROWID, name from stations'
 
-get_tag='select name from stations where tags like "%'
+get_tag='select ROWID, name from stations where tags like "%'
 get_tag+="$2"
 get_tag+='%"'
 
@@ -75,13 +85,21 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
+#if the first parameter is a number
+ if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
+	 url=$(${path}/sqlite3 ${path}/radio.db "$get_url_for_id")
+ fi
+
 case $1 in
 	random)
 		url=$(${path}/sqlite3 ${path}/radio.db "$get_random")
 	;;
 	-la|--list-all)
 		stations=$(${path}/sqlite3 ${path}/radio.db "$get_stations")
-		echo "$stations"
+		echo "Choose a station by using its ID"
+		echo -e "ID \t Name"
+		echo "-------------------------------------------"
+		echo "$stations" | sed 's/|/\t/'
 		exit 0
 	;;
 	-l|--list)
@@ -93,7 +111,10 @@ case $1 in
 				url=$(${path}/sqlite3 ${path}/radio.db "$get_random_for_tag")
 			else
 				tags=$(${path}/sqlite3 ${path}/radio.db "$get_tag")
-				echo "$tags"
+				echo "Choose a station by using its ID"
+				echo -e "ID \t Name"
+				echo "-------------------------------------------"
+				echo "$tags" | sed 's/|/\t/'
 				exit 0
 			fi
 		fi
@@ -122,7 +143,11 @@ case $1 in
 	fi
 	;;
 	-b|--backup)
+	if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
+ 	 url=$(${path}/sqlite3 ${path}/radio.db "$get_url2_for_id")
+ else
 		url=$(${path}/sqlite3 ${path}/radio.db "$get_url2")
+	fi
 	;;
 	-mp|--most-played)
 		played=$(${path}/sqlite3 ${path}/radio.db "$get_most_played")
@@ -132,7 +157,10 @@ case $1 in
 	-h|--help)
 		echo "usage: radio <stationname>"
 		echo "example: radio kexp"
-		echo "also possible: radio random"
+		echo "Or use the unique ID of every station: radio <ID>"
+		echo "To get the ID for example search for a tag."
+		echo ""
+		echo "Also possible: radio random"
 		echo
 		echo "-b --backup"
 		echo "play backup stream (if exists). Might help if the primary streaming URL is not working"
@@ -185,10 +213,12 @@ fi
 #if string contains newlines therfore multiple urls
 if [ $(echo "$url" | wc -l) -gt 1 ]; then
 	#select names
-	names=$(${path}/sqlite3 ${path}/radio.db "$get_names")
+	#echo $get_names_with_id
+	names=$(${path}/sqlite3 ${path}/radio.db "$get_names_with_id")
 	echo "Multiple possible stations. Please specify!"
+	echo -e "ID \t Name"
 	echo "-------------------------------------------"
-	echo "$names"
+	echo "$names" | sed 's/|/\t/'
 	exit 1;
 else
 	get_name_for_url='select name from stations where url="'
