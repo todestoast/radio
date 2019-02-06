@@ -2,6 +2,13 @@
 path=~/.radio
 #path=~/programs/own/radio
 
+function printStations() {
+	echo "Multiple possible stations. Please specify!"
+	echo -e "ID \t Name"
+	echo "-------------------------------------------"
+	echo "$1" | sed 's/|/\t/'
+}
+
 get_url='select url from stations where name like "%'
 get_url+="$1"
 get_url+='%"'
@@ -10,7 +17,7 @@ get_url_for_id='select url from stations where rowid='
 get_url_for_id+=$1
 
 get_url2_for_id='select url2 from stations where rowid='
-get_url2_for_id+=$1
+get_url2_for_id+=$2
 
 get_url2='select url2 from stations where name like "%'
 get_url2+="$2"
@@ -96,10 +103,7 @@ case $1 in
 	;;
 	-la|--list-all)
 		stations=$(${path}/sqlite3 ${path}/radio.db "$get_stations")
-		echo "Choose a station by using its ID"
-		echo -e "ID \t Name"
-		echo "-------------------------------------------"
-		echo "$stations" | sed 's/|/\t/'
+		printStations "$stations"
 		exit 0
 	;;
 	-l|--list)
@@ -111,10 +115,7 @@ case $1 in
 				url=$(${path}/sqlite3 ${path}/radio.db "$get_random_for_tag")
 			else
 				tags=$(${path}/sqlite3 ${path}/radio.db "$get_tag")
-				echo "Choose a station by using its ID"
-				echo -e "ID \t Name"
-				echo "-------------------------------------------"
-				echo "$tags" | sed 's/|/\t/'
+				printStations "$tags"
 				exit 0
 			fi
 		fi
@@ -215,10 +216,7 @@ if [ $(echo "$url" | wc -l) -gt 1 ]; then
 	#select names
 	#echo $get_names_with_id
 	names=$(${path}/sqlite3 ${path}/radio.db "$get_names_with_id")
-	echo "Multiple possible stations. Please specify!"
-	echo -e "ID \t Name"
-	echo "-------------------------------------------"
-	echo "$names" | sed 's/|/\t/'
+	printStations "$names"
 	exit 1;
 else
 	get_name_for_url='select name from stations where url="'
