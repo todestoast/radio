@@ -32,6 +32,7 @@ lists the top 10 most played radio stations measured by duration of playing (mos
 -p --print<br />
 prints the URL of a station. Can be used with names or IDs<br />
 example: <code>radio -p 5</code><br />
+to print the backup stream use <code>radio -p -b</code>
 
 -r --region<br />
 list all radio stations for specific region<br />

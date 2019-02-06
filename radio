@@ -20,6 +20,9 @@ get_url_only+='%"'
 get_url_only_for_id='select url from stations where rowid='
 get_url_only_for_id+=$2
 
+get_url2_only_for_id='select url2 from stations where rowid='
+get_url2_only_for_id+=$3
+
 get_url_for_id='select url from stations where rowid='
 get_url_for_id+=$1
 
@@ -29,6 +32,10 @@ get_url2_for_id+=$2
 get_url2='select url2 from stations where name like "%'
 get_url2+="$2"
 get_url2+='%"'
+
+get_url2_only='select url2 from stations where name like "%'
+get_url2_only+="$3"
+get_url2_only+='%"'
 
 get_names='select name from stations where name like "%'
 get_names+="$1"
@@ -151,6 +158,10 @@ case $1 in
 	fi
 	;;
 	-b|--backup)
+	if [[ "$2" == "-p" || "$2" == "--print" ]]; then
+		echo "Please use radio -p -b for printing out the backup stream"
+		exit 0
+	fi
 	if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
  	 url=$(${path}/sqlite3 ${path}/radio.db "$get_url2_for_id")
  else
@@ -194,6 +205,7 @@ case $1 in
 		echo "-p --print"
 		echo "prints the URL of a station. Can be used with names or IDs"
 		echo "example: radio -p 5"
+		echo "to print the backup stream use radio -p -b"
 		echo
 		echo "-r --region"
 		echo "list all radio stations for specific region"
@@ -214,11 +226,21 @@ fi
 if [[ "$1" == "-p" || "$1" == "--print" ]]; then
 	if [[ `echo "$2" | grep -E ^[[:digit:]]+$` ]]; then
 		url=$(${path}/sqlite3 ${path}/radio.db "$get_url_only_for_id")
+	elif [[ "$2" == "-b" || "$2" == "--backup" ]];then
+		if [[ `echo "$3" | grep -E ^[[:digit:]]+$` ]]; then
+			url=$(${path}/sqlite3 ${path}/radio.db "$get_url2_only_for_id")
+		else
+			url=$(${path}/sqlite3 ${path}/radio.db "$get_url2_only")
+		fi
 	else
-		url=$(${path}/sqlite3 ${path}/radio.db "$get_url_only")
+			url=$(${path}/sqlite3 ${path}/radio.db "$get_url_only")
 	fi
 	#if no url was found
 	if [ ${#url}  -eq 0 ]; then
+		if [[ "$2" == "-b" || "$2" == "--backup" ]];then
+			echo "No Backup URL for $3 found"
+			exit 1
+		fi
 		echo "No URL for $2 found"
 		exit 1
 	else
