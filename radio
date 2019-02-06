@@ -13,6 +13,13 @@ get_url='select url from stations where name like "%'
 get_url+="$1"
 get_url+='%"'
 
+get_url_only='select url from stations where name like "%'
+get_url_only+="$2"
+get_url_only+='%"'
+
+get_url_only_for_id='select url from stations where rowid='
+get_url_only_for_id+=$2
+
 get_url_for_id='select url from stations where rowid='
 get_url_for_id+=$1
 
@@ -184,6 +191,10 @@ case $1 in
 		echo "-mp --most-played"
 		echo "lists the top 10 most played radio stations measured by duration of playing (most played first)"
 		echo
+		echo "-p --print"
+		echo "prints the URL of a station. Can be used with names or IDs"
+		echo "example: radio -p 5"
+		echo
 		echo "-r --region"
 		echo "list all radio stations for specific region"
 		echo "example: radio -r beirut"
@@ -198,6 +209,22 @@ esac
 
 if [ ${#url}  -eq 0 ]; then
  url=$(${path}/sqlite3 ${path}/radio.db "$get_url")
+fi
+
+if [[ "$1" == "-p" || "$1" == "--print" ]]; then
+	if [[ `echo "$2" | grep -E ^[[:digit:]]+$` ]]; then
+		url=$(${path}/sqlite3 ${path}/radio.db "$get_url_only_for_id")
+	else
+		url=$(${path}/sqlite3 ${path}/radio.db "$get_url_only")
+	fi
+	#if no url was found
+	if [ ${#url}  -eq 0 ]; then
+		echo "No URL for $2 found"
+		exit 1
+	else
+		echo "$url"
+		exit 0
+	fi
 fi
 
 #if no url was found

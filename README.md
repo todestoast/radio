@@ -29,6 +29,10 @@ list all regions for radio stations
 -mp --most-played<br />
 lists the top 10 most played radio stations measured by duration of playing (most played first)<br />
 
+-p --print<br />
+prints the URL of a station. Can be used with names or IDs<br />
+example: <code>radio -p 5</code><br />
+
 -r --region<br />
 list all radio stations for specific region<br />
 example: <code>radio -r beirut</code><br />
