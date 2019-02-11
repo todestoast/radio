@@ -1,6 +1,10 @@
 #!/bin/bash
 path=~/.radio
 #path=~/programs/own/radio
+dbname='radio.db'
+db=${path}/$dbname
+sqlitename='sqlite3'
+sqlite=${path}/$sqlitename
 
 function printStations() {
 	echo "Multiple possible stations. Please specify!"
@@ -10,11 +14,11 @@ function printStations() {
 }
 
 function backuphistory() {
-	${path}/sqlite3 ${path}/radio.db < ${path}/backup_commands
+	$sqlite $db < ${path}/backup_commands
 }
 
 function restorehistory() {
-	${path}/sqlite3 ${path}/radio.db < ${path}/restore_commands
+	$sqlite $db < ${path}/restore_commands
 }
 
 get_url='select url from stations where name like "%'
@@ -119,15 +123,15 @@ fi
 
 #if the first parameter is a number
  if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
-	 url=$(${path}/sqlite3 ${path}/radio.db "$get_url_for_id")
+	 url=$($sqlite $db "$get_url_for_id")
  fi
 
 case $1 in
 	random)
-		url=$(${path}/sqlite3 ${path}/radio.db "$get_random")
+		url=$($sqlite $db "$get_random")
 	;;
 	-la|--list-all)
-		stations=$(${path}/sqlite3 ${path}/radio.db "$get_stations")
+		stations=$($sqlite $db "$get_stations")
 		printStations "$stations"
 		exit 0
 	;;
@@ -137,21 +141,21 @@ case $1 in
 			exit 1;
 		else
 			if [[ "$3" == "random" ]]; then
-				url=$(${path}/sqlite3 ${path}/radio.db "$get_random_for_tag")
+				url=$($sqlite $db "$get_random_for_tag")
 			else
-				tags=$(${path}/sqlite3 ${path}/radio.db "$get_tag")
+				tags=$($sqlite $db "$get_tag")
 				printStations "$tags"
 				exit 0
 			fi
 		fi
 	;;
 	-lr|--list-regions)
-		location=$(${path}/sqlite3 ${path}/radio.db "$get_all_location")
+		location=$($sqlite $db "$get_all_location")
 		echo "$location"
 		exit 0;
 	;;
 	-rp|--recently-played)
-	history=$(${path}/sqlite3 ${path}/radio.db "$get_recently_played")
+	history=$($sqlite $db "$get_recently_played")
 	echo "$history"
 	exit 0
 	;;
@@ -161,9 +165,9 @@ case $1 in
 		exit 1;
 	fi
 	if [[ "$3" == "random" ]]; then
-		url=$(${path}/sqlite3 ${path}/radio.db "$get_random_for_loc")
+		url=$($sqlite $db "$get_random_for_loc")
 	else
-		stations=$(${path}/sqlite3 ${path}/radio.db "$get_stations_for_loc")
+		stations=$($sqlite $db "$get_stations_for_loc")
 		echo "$stations"
 		exit 0
 	fi
@@ -174,13 +178,13 @@ case $1 in
 		exit 0
 	fi
 	if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
- 	 url=$(${path}/sqlite3 ${path}/radio.db "$get_url2_for_id")
+ 	 url=$($sqlite $db "$get_url2_for_id")
  else
-		url=$(${path}/sqlite3 ${path}/radio.db "$get_url2")
+		url=$($sqlite $db "$get_url2")
 	fi
 	;;
 	-mp|--most-played)
-		played=$(${path}/sqlite3 ${path}/radio.db "$get_most_played")
+		played=$($sqlite $db "$get_most_played")
 		echo "$played"
 		exit 0
 	;;
@@ -231,21 +235,21 @@ case $1 in
 esac
 
 if [ ${#url}  -eq 0 ]; then
- url=$(${path}/sqlite3 ${path}/radio.db "$get_url")
+ url=$($sqlite $db "$get_url")
 fi
 
 #make -p also work with the ID and the backup stream
 if [[ "$1" == "-p" || "$1" == "--print" ]]; then
 	if [[ `echo "$2" | grep -E ^[[:digit:]]+$` ]]; then
-		url=$(${path}/sqlite3 ${path}/radio.db "$get_url_only_for_id")
+		url=$($sqlite $db "$get_url_only_for_id")
 	elif [[ "$2" == "-b" || "$2" == "--backup" ]];then
 		if [[ `echo "$3" | grep -E ^[[:digit:]]+$` ]]; then
-			url=$(${path}/sqlite3 ${path}/radio.db "$get_url2_only_for_id")
+			url=$($sqlite $db "$get_url2_only_for_id")
 		else
-			url=$(${path}/sqlite3 ${path}/radio.db "$get_url2_only")
+			url=$($sqlite $db "$get_url2_only")
 		fi
 	else
-			url=$(${path}/sqlite3 ${path}/radio.db "$get_url_only")
+			url=$($sqlite $db "$get_url_only")
 	fi
 	#if no url was found
 	if [ ${#url}  -eq 0 ]; then
@@ -276,14 +280,14 @@ fi
 if [ $(echo "$url" | wc -l) -gt 1 ]; then
 	#select names
 	#echo $get_names_with_id
-	names=$(${path}/sqlite3 ${path}/radio.db "$get_names_with_id")
+	names=$($sqlite $db "$get_names_with_id")
 	printStations "$names"
 	exit 1;
 else
 	get_name_for_url='select name from stations where url="'
 	get_name_for_url+=$url
 	get_name_for_url+='"'
-	name=$(${path}/sqlite3 ${path}/radio.db "$get_name_for_url")
+	name=$($sqlite $db "$get_name_for_url")
 	echo "Playing $name"
 	echo
 	mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
@@ -295,6 +299,6 @@ set_history+="'$name'"
 set_history+=','
 set_history+=$playtime
 set_history+=')'
-${path}/sqlite3 ${path}/radio.db "$set_history"
+$sqlite $db "$set_history"
 
 exit 0
