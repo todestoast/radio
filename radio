@@ -174,7 +174,7 @@ case $1 in
 	;;
 	-b|--backup)
 	if [[ "$2" == "-p" || "$2" == "--print" ]]; then
-		echo "Please use radio -p -b for printing out the backup stream"
+		$0 -p -b "$3"
 		exit 0
 	fi
 	if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
