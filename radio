@@ -17,10 +17,11 @@ function isnumerical() {
 }
 
 function printStations() {
+	outtext="$("$sqlite" "$db" "$1")"
 	echo "Multiple possible stations. Please specify!"
 	echo -e "ID \t Name"
 	echo "-------------------------------------------"
-	echo -e "${1//|/\\t}"
+	echo -e "${outtext//|/\\t}"
 }
 
 function backuphistory() {
@@ -140,8 +141,7 @@ case $1 in
 		url=$("$sqlite" "$db" "$get_random")
 		;;
 	-la|--list-all)
-		stations=$("$sqlite" "$db" "$get_stations")
-		printStations "$stations"
+		printStations "$get_stations"
 		exit 0
 		;;
 	-l|--list)
@@ -150,8 +150,7 @@ case $1 in
 			if [[ "$3" == "random" ]]; then
 				url="$("$sqlite" "$db" "$get_random_for_tag")"
 			else
-				tags="$("$sqlite" "$db" "$get_tag")"
-				printStations "$tags"
+				printStations "$get_tag"
 				exit 0
 			fi
 		;;
@@ -268,8 +267,7 @@ fi
 if [ $(echo "$url" | wc -l) -gt 1 ]; then
 	#select names
 	#echo $get_names_with_id
-	names=$("$sqlite" "$db" "$get_names_with_id")
-	printStations "$names"
+	printStations "$get_names_with_id"
 	exit 1;
 else
 	get_name_for_url='select name from stations where url="'
