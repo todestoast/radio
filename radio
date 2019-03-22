@@ -21,6 +21,16 @@ function restorehistory() {
 	$sqlite $db < ${path}/restore_commands
 }
 
+if [[ "$1" == "-x" ]];then
+	 if [ -z "$2" ]; then
+		echo "please pass proxy URL after argument -x"
+		exit 1
+ 	else	
+		proxy="$2"
+		set -- $3 $4 $5
+	fi
+fi
+
 get_url='select url from stations where name like "%'
 get_url+="$1"
 get_url+='%"'
@@ -230,6 +240,11 @@ case $1 in
 		echo
 		echo "-rp --recently-played"
 		echo "list 10 last played stations (newest first)"
+		echo 
+		echo "-x"
+		echo "use proxy for playing streams pass proxy in following format http_proxy://url:port"
+		echo "example: radio -x http_proxy://proxy:8080 random"
+		echo
 		exit 0
 		;;
 esac
@@ -290,7 +305,11 @@ else
 	name=$($sqlite $db "$get_name_for_url")
 	echo "Playing $name"
 	echo
-	mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
+	if [ -z $proxy ]; then
+		 mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
+	else
+		mplayer ${proxy}/$url | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
+	fi
 fi
 end=$(date +%s)
 playtime=$((($end-$today)/60))
