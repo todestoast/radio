@@ -131,15 +131,10 @@ else
 	echo "Missing file. Downloading..."
 	cd "$path" || die "can't cd to $path"
 	wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
-	if [ ! -f "${path}/radio.db" ]; then
-		wget -q https://github.com/todestoast/radio/raw/master/radio.db
-	fi
+	[ -f "${path}/radio.db" ] || wget -q https://github.com/todestoast/radio/raw/master/radio.db
 fi
 
-if [ -z "$1" ]; then
-	echo "see --help for usage"
-	exit 1
-fi
+[ -z "$1" ] && die "see --help for usage"
 
 #if the first parameter is a number
  isnumerical "$1" && url="$("$sqlite" "$db" "$get_url_for_id")"
@@ -147,17 +142,15 @@ fi
 case $1 in
 	random)
 		url=$("$sqlite" "$db" "$get_random")
-	;;
+		;;
 	-la|--list-all)
 		stations=$("$sqlite" "$db" "$get_stations")
 		printStations "$stations"
 		exit 0
-	;;
+		;;
 	-l|--list)
-		if [ -z "$2" ]; then
-			echo "Pass a word you want to search for"
-			exit 1;
-		else
+		[ -z "$2" ] && die "Pass a word you want to search for"
+
 			if [[ "$3" == "random" ]]; then
 				url="$("$sqlite" "$db" "$get_random_for_tag")"
 			else
@@ -166,22 +159,20 @@ case $1 in
 				exit 0
 			fi
 		fi
-	;;
+		;;
 	-lr|--list-regions)
 		location="$("$sqlite" "$db" "$get_all_location")"
 		echo "$location"
 		exit 0;
-	;;
+		;;
 	-rp|--recently-played)
-	history="$("$sqlite" "$db" "$get_recently_played")"
-	echo "$history"
-	exit 0
-	;;
+		history="$("$sqlite" "$db" "$get_recently_played")"
+		echo "$history"
+		exit 0
+		;;
 	-r|--region)
-	if [ -z "$2" ]; then
-		echo "Pass a region you want to search for"
-		exit 1;
-	fi
+	[ -z "$2" ] && die "Pass a region you want to search for"
+
 	if [[ "$3" == "random" ]]; then
 		url="$("$sqlite" "$db" "$get_random_for_loc")"
 	else
@@ -191,10 +182,8 @@ case $1 in
 	fi
 	;;
 	-b|--backup)
-	if [[ "$2" == "-p" || "$2" == "--print" ]]; then
-		"$0" -p -b "$3"
-		exit 0
-	fi
+	[[ "$2" == "-p" || "$2" == "--print" ]] && exec "$0" -p -b "$3"
+
 	if isnumerical "$1"; then
  	 url="$("$sqlite" "$db" "$get_url2_for_id")"
  	else
@@ -205,7 +194,7 @@ case $1 in
 		played="$("$sqlite" "$db" "$get_most_played")"
 		echo "$played"
 		exit 0
-	;;
+		;;
 	-h|--help)
 		echo "usage: radio <stationname>"
 		echo "example: radio kexp"
@@ -257,9 +246,7 @@ case $1 in
 		;;
 esac
 
-if [ ${#url}  -eq 0 ]; then
- url="$("$sqlite" "$db" "$get_url")"
-fi
+[ ${#url}  -eq 0 ] && url="$("$sqlite" "$db" "$get_url")"
 
 #make -p also work with the ID and the backup stream
 if [[ "$1" == "-p" || "$1" == "--print" ]]; then
@@ -276,27 +263,18 @@ if [[ "$1" == "-p" || "$1" == "--print" ]]; then
 	fi
 	#if no url was found
 	if [ ${#url}  -eq 0 ]; then
-		if [[ "$2" == "-b" || "$2" == "--backup" ]];then
-			echo "No Backup URL for $3 found"
-			exit 1
-		fi
-		echo "No URL for $2 found"
-		exit 1
-	else
+		[[ "$2" == "-b" || "$2" == "--backup" ]] && die "No Backup URL for $3 found"
+		die "No URL for $2 found"
+	fi
 		echo "$url"
 		exit 0
-	fi
-fi
+ fi
+
 
 #if no url was found
 if [ ${#url}  -eq 0 ]; then
-	if [[ "$1" == "-b" || "$1" == "--backup" ]]; then
-		echo "No backup stream found :("
-		exit 1
-	else
-        echo "No station for $1 found :("
-        exit 1
-	fi
+	[[ "$1" == "-b" || "$1" == "--backup" ]] && die "No backup stream found :("
+       die "No station for $1 found :("
 fi
 
 #if string contains newlines therefore multiple urls
