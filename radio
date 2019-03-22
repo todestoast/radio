@@ -11,6 +11,11 @@ function die() {
 	exit 1
 }
 
+function isnumerical() {
+	[[ "$1" =~ ^[[:digit:]]+$ ]] && return 0
+	return 1
+}
+
 function printStations() {
 	echo "Multiple possible stations. Please specify!"
 	echo -e "ID \t Name"
@@ -137,9 +142,7 @@ if [ -z "$1" ]; then
 fi
 
 #if the first parameter is a number
- if [[ $(echo "$1" | grep -E ^[[:digit:]]+$) ]]; then
-	 url=$("$sqlite" "$db" "$get_url_for_id")
- fi
+ isnumerical "$1" && url="$("$sqlite" "$db" "$get_url_for_id")"
 
 case $1 in
 	random)
@@ -192,9 +195,9 @@ case $1 in
 		"$0" -p -b "$3"
 		exit 0
 	fi
-	if [[ $(echo "$1" | grep -E ^[[:digit:]]+$) ]]; then
+	if isnumerical "$1"; then
  	 url="$("$sqlite" "$db" "$get_url2_for_id")"
- else
+ 	else
 		url="$("$sqlite" "$db" "$get_url2")"
 	fi
 	;;
@@ -260,10 +263,10 @@ fi
 
 #make -p also work with the ID and the backup stream
 if [[ "$1" == "-p" || "$1" == "--print" ]]; then
-	if [[ $(echo "$2" | grep -E ^[[:digit:]]+$) ]]; then
+	if isnumerical "$2"; then
 		url="$("$sqlite" "$db" "$get_url_only_for_id")"
 	elif [[ "$2" == "-b" || "$2" == "--backup" ]];then
-		if [[ $(echo "$3" | grep -E ^[[:digit:]]+$) ]]; then
+		if isnumerical "$3"; then
 			url="$("$sqlite" "$db" "$get_url2_only_for_id")"
 		else
 			url="$("$sqlite" "$db" "$get_url2_only")"
