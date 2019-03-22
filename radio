@@ -156,13 +156,11 @@ case $1 in
 			fi
 		;;
 	-lr|--list-regions)
-		location="$("$sqlite" "$db" "$get_all_location")"
-		echo "$location"
-		exit 0;
+		"$sqlite" "$db" "$get_all_location"
+		exit 0
 		;;
 	-rp|--recently-played)
-		history="$("$sqlite" "$db" "$get_recently_played")"
-		echo "$history"
+		"$sqlite" "$db" "$get_recently_played"
 		exit 0
 		;;
 	-r|--region)
@@ -171,8 +169,7 @@ case $1 in
 	if [[ "$3" == "random" ]]; then
 		url="$("$sqlite" "$db" "$get_random_for_loc")"
 	else
-		stations="$("$sqlite" "$db" "$get_stations_for_loc")"
-		echo "$stations"
+		"$sqlite" "$db" "$get_stations_for_loc"
 		exit 0
 	fi
 	;;
@@ -186,8 +183,7 @@ case $1 in
 	fi
 	;;
 	-mp|--most-played)
-		played="$("$sqlite" "$db" "$get_most_played")"
-		echo "$played"
+		"$sqlite" "$db" "$get_most_played"
 		exit 0
 		;;
 	-h|--help)
