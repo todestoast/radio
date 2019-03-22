@@ -2,23 +2,23 @@
 path=~/.radio
 #path=~/programs/own/radio
 dbname='radio.db'
-db=${path}/$dbname
+db="${path}/$dbname"
 sqlitename='sqlite3'
-sqlite=${path}/$sqlitename
+sqlite="${path}/$sqlitename"
 
 function printStations() {
 	echo "Multiple possible stations. Please specify!"
 	echo -e "ID \t Name"
 	echo "-------------------------------------------"
-	echo "$1" | sed 's/|/\t/'
+	echo -e "${1//|/\\t}"
 }
 
 function backuphistory() {
-	$sqlite $db < ${path}/backup_commands
+	"$sqlite" "$db" < "${path}/backup_commands"
 }
 
 function restorehistory() {
-	$sqlite $db < ${path}/restore_commands
+	"$sqlite" "$db" < "${path}/restore_commands"
 }
 
 if [[ "$1" == "-x" ]];then
@@ -94,8 +94,8 @@ get_most_played='select name from history order by playtime desc limit 9'
 
 get_all_location='select distinct location from stations'
 
-if [ -f ${path}/db.md5 ]; then
-	md5date=$(date +%s -r ${path}/db.md5)
+if [ -f "${path}/db.md5" ]; then
+	md5date=$(date +%s -r "${path}/db.md5")
 	today=$(date +%s)
 	datediff=$((today-md5date))
 	if [ $datediff -gt 86471 ]; then
@@ -104,24 +104,24 @@ if [ -f ${path}/db.md5 ]; then
 		echo
 		cd /tmp/
 		wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
-		if [ $(diff /tmp/db.md5 ${path}/db.md5 | wc -l) -gt 1 ]; then
+		if [ $(diff /tmp/db.md5 "${path}/db.md5" | wc -l) -gt 1 ]; then
 			#different sum, download db
 			echo "new stations found. downloading..."
-			cd $path
+			cd "$path"
 			backuphistory
 			rm radio.db
 			wget -q https://github.com/todestoast/radio/raw/master/radio.db
 			restorehistory
 			rm backup.csv
 			echo "new stations added"
-			mv /tmp/db.md5 ${path}/db.md5
+			mv /tmp/db.md5 "${path}/db.md5"
 		fi
 	fi
 else
 	echo "Missing file. Downloading..."
-	cd $path
+	cd "$path"
 	wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
-	if [ ! -f ${path}/radio.db ]; then
+	if [ ! -f "${path}/radio.db" ]; then
 		wget -q https://github.com/todestoast/radio/raw/master/radio.db
 	fi
 fi
@@ -132,16 +132,16 @@ if [ -z "$1" ]; then
 fi
 
 #if the first parameter is a number
- if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
-	 url=$($sqlite $db "$get_url_for_id")
+ if [[ $(echo "$1" | grep -E ^[[:digit:]]+$) ]]; then
+	 url=$("$sqlite" "$db" "$get_url_for_id")
  fi
 
 case $1 in
 	random)
-		url=$($sqlite $db "$get_random")
+		url=$("$sqlite" "$db" "$get_random")
 	;;
 	-la|--list-all)
-		stations=$($sqlite $db "$get_stations")
+		stations=$("$sqlite" "$db" "$get_stations")
 		printStations "$stations"
 		exit 0
 	;;
@@ -151,21 +151,21 @@ case $1 in
 			exit 1;
 		else
 			if [[ "$3" == "random" ]]; then
-				url=$($sqlite $db "$get_random_for_tag")
+				url="$("$sqlite" "$db" "$get_random_for_tag")"
 			else
-				tags=$($sqlite $db "$get_tag")
+				tags="$("$sqlite" "$db" "$get_tag")"
 				printStations "$tags"
 				exit 0
 			fi
 		fi
 	;;
 	-lr|--list-regions)
-		location=$($sqlite $db "$get_all_location")
+		location="$("$sqlite" "$db" "$get_all_location")"
 		echo "$location"
 		exit 0;
 	;;
 	-rp|--recently-played)
-	history=$($sqlite $db "$get_recently_played")
+	history="$("$sqlite" "$db" "$get_recently_played")"
 	echo "$history"
 	exit 0
 	;;
@@ -175,26 +175,26 @@ case $1 in
 		exit 1;
 	fi
 	if [[ "$3" == "random" ]]; then
-		url=$($sqlite $db "$get_random_for_loc")
+		url="$("$sqlite" "$db" "$get_random_for_loc")"
 	else
-		stations=$($sqlite $db "$get_stations_for_loc")
+		stations="$("$sqlite" "$db" "$get_stations_for_loc")"
 		echo "$stations"
 		exit 0
 	fi
 	;;
 	-b|--backup)
 	if [[ "$2" == "-p" || "$2" == "--print" ]]; then
-		$0 -p -b "$3"
+		"$0" -p -b "$3"
 		exit 0
 	fi
-	if [[ `echo "$1" | grep -E ^[[:digit:]]+$` ]]; then
- 	 url=$($sqlite $db "$get_url2_for_id")
+	if [[ $(echo "$1" | grep -E ^[[:digit:]]+$) ]]; then
+ 	 url="$("$sqlite" "$db" "$get_url2_for_id")"
  else
-		url=$($sqlite $db "$get_url2")
+		url="$("$sqlite" "$db" "$get_url2")"
 	fi
 	;;
 	-mp|--most-played)
-		played=$($sqlite $db "$get_most_played")
+		played="$("$sqlite" "$db" "$get_most_played")"
 		echo "$played"
 		exit 0
 	;;
@@ -250,21 +250,21 @@ case $1 in
 esac
 
 if [ ${#url}  -eq 0 ]; then
- url=$($sqlite $db "$get_url")
+ url="$("$sqlite" "$db" "$get_url")"
 fi
 
 #make -p also work with the ID and the backup stream
 if [[ "$1" == "-p" || "$1" == "--print" ]]; then
-	if [[ `echo "$2" | grep -E ^[[:digit:]]+$` ]]; then
-		url=$($sqlite $db "$get_url_only_for_id")
+	if [[ $(echo "$2" | grep -E ^[[:digit:]]+$) ]]; then
+		url="$("$sqlite" "$db" "$get_url_only_for_id")"
 	elif [[ "$2" == "-b" || "$2" == "--backup" ]];then
-		if [[ `echo "$3" | grep -E ^[[:digit:]]+$` ]]; then
-			url=$($sqlite $db "$get_url2_only_for_id")
+		if [[ $(echo "$3" | grep -E ^[[:digit:]]+$) ]]; then
+			url="$("$sqlite" "$db" "$get_url2_only_for_id")"
 		else
-			url=$($sqlite $db "$get_url2_only")
+			url="$("$sqlite" "$db" "$get_url2_only")"
 		fi
 	else
-			url=$($sqlite $db "$get_url_only")
+			url="$("$sqlite" "$db" "$get_url_only")"
 	fi
 	#if no url was found
 	if [ ${#url}  -eq 0 ]; then
@@ -291,33 +291,33 @@ if [ ${#url}  -eq 0 ]; then
 	fi
 fi
 
-#if string contains newlines therfore multiple urls
+#if string contains newlines therefore multiple urls
 if [ $(echo "$url" | wc -l) -gt 1 ]; then
 	#select names
 	#echo $get_names_with_id
-	names=$($sqlite $db "$get_names_with_id")
+	names=$("$sqlite" "$db" "$get_names_with_id")
 	printStations "$names"
 	exit 1;
 else
 	get_name_for_url='select name from stations where url="'
-	get_name_for_url+=$url
+	get_name_for_url+="$url"
 	get_name_for_url+='"'
-	name=$($sqlite $db "$get_name_for_url")
+	name="$("$sqlite" "$db" "$get_name_for_url")"
 	echo "Playing $name"
 	echo
 	if [ -z $proxy ]; then
-		 mplayer -quiet $url 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
+		 mplayer -quiet "$url" 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
 	else
-		mplayer ${proxy}/$url | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
+		mplayer "${proxy}/$url" | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
 	fi
 fi
 end=$(date +%s)
-playtime=$((($end-$today)/60))
+playtime=$(((end-today)/60))
 set_history='insert into history values('
 set_history+="'$name'"
 set_history+=','
 set_history+=$playtime
 set_history+=')'
-$sqlite $db "$set_history"
+"$sqlite" "$db" "$set_history"
 
 exit 0
