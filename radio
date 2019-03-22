@@ -6,6 +6,11 @@ db="${path}/$dbname"
 sqlitename='sqlite3'
 sqlite="${path}/$sqlitename"
 
+function die() {
+	echo -e "\\n$1\\n"
+	exit 1
+}
+
 function printStations() {
 	echo "Multiple possible stations. Please specify!"
 	echo -e "ID \t Name"
@@ -102,12 +107,12 @@ if [ -f "${path}/db.md5" ]; then
 		#file is older than 1 day
 		echo "checking for new stations..."
 		echo
-		cd /tmp/
+		cd /tmp/ || die "can't cd to /tmp"
 		wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
 		if [ $(diff /tmp/db.md5 "${path}/db.md5" | wc -l) -gt 1 ]; then
 			#different sum, download db
 			echo "new stations found. downloading..."
-			cd "$path"
+			cd "$path" || die "can't cd to $path"
 			backuphistory
 			rm radio.db
 			wget -q https://github.com/todestoast/radio/raw/master/radio.db
@@ -119,7 +124,7 @@ if [ -f "${path}/db.md5" ]; then
 	fi
 else
 	echo "Missing file. Downloading..."
-	cd "$path"
+	cd "$path" || die "can't cd to $path"
 	wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
 	if [ ! -f "${path}/radio.db" ]; then
 		wget -q https://github.com/todestoast/radio/raw/master/radio.db
