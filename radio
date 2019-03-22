@@ -147,12 +147,12 @@ case $1 in
 	-l|--list)
 		[ -z "$2" ] && die "Pass a word you want to search for"
 
-			if [[ "$3" == "random" ]]; then
+		if [[ "$3" == "random" ]]; then
 				url="$("$sqlite" "$db" "$get_random_for_tag")"
-			else
+		else
 				printStations "$get_tag"
 				exit 0
-			fi
+		fi
 		;;
 	-lr|--list-regions)
 		exec "$sqlite" "$db" "$get_all_location"
@@ -161,47 +161,47 @@ case $1 in
 		exec "$sqlite" "$db" "$get_recently_played"
 		;;
 	-r|--region)
-	[ -z "$2" ] && die "Pass a region you want to search for"
+		[ -z "$2" ] && die "Pass a region you want to search for"
 
-	if [[ "$3" == "random" ]]; then
-		url="$("$sqlite" "$db" "$get_random_for_loc")"
-	else
-		exec "$sqlite" "$db" "$get_stations_for_loc"
-	fi
+		if [[ "$3" == "random" ]]; then
+			url="$("$sqlite" "$db" "$get_random_for_loc")"
+		else
+			exec "$sqlite" "$db" "$get_stations_for_loc"
+		fi
 	;;
 	-b|--backup)
-	[[ "$2" == "-p" || "$2" == "--print" ]] && exec "$0" -p -b "$3"
+		[[ "$2" == "-p" || "$2" == "--print" ]] && exec "$0" -p -b "$3"
 
-	if isnumerical "$1"; then
- 	 url="$("$sqlite" "$db" "$get_url2_for_id")"
- 	else
-		url="$("$sqlite" "$db" "$get_url2")"
-	fi
+		if isnumerical "$1"; then
+ 	 		url="$("$sqlite" "$db" "$get_url2_for_id")"
+ 		else
+			url="$("$sqlite" "$db" "$get_url2")"
+		fi
 	;;
 	-mp|--most-played)
 		exec "$sqlite" "$db" "$get_most_played"
-		;;
+	;;
 		#make -p also work with the ID and the backup stream
 	-p|--print)
-			if isnumerical "$2"; then
-				url="$("$sqlite" "$db" "$get_url_only_for_id")"
-			elif [[ "$2" == "-b" || "$2" == "--backup" ]];then
-				if isnumerical "$3"; then
-					url="$("$sqlite" "$db" "$get_url2_only_for_id")"
-				else
-					url="$("$sqlite" "$db" "$get_url2_only")"
-				fi
+		if isnumerical "$2"; then
+			url="$("$sqlite" "$db" "$get_url_only_for_id")"
+		elif [[ "$2" == "-b" || "$2" == "--backup" ]];then
+			if isnumerical "$3"; then
+				url="$("$sqlite" "$db" "$get_url2_only_for_id")"
 			else
-					url="$("$sqlite" "$db" "$get_url_only")"
+				url="$("$sqlite" "$db" "$get_url2_only")"
 			fi
-			#if no url was found
-			if [ ${#url}  -eq 0 ]; then
-				[[ "$2" == "-b" || "$2" == "--backup" ]] && die "No Backup URL for $3 found"
-				die "No URL for $2 found"
-			fi
-				echo "$url"
-				exit 0
-		;;
+		else
+			url="$("$sqlite" "$db" "$get_url_only")"
+		fi
+		#if no url was found
+		if [ ${#url}  -eq 0 ]; then
+			[[ "$2" == "-b" || "$2" == "--backup" ]] && die "No Backup URL for $3 found"
+			die "No URL for $2 found"
+		fi
+		echo "$url"
+		exit 0
+	;;
 	-h|--help)
 		echo "usage: radio <stationname>"
 		echo "example: radio kexp"
