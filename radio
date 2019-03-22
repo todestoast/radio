@@ -69,10 +69,6 @@ get_url2_only='select url2 from stations where name like "%'
 get_url2_only+="$3"
 get_url2_only+='%"'
 
-get_names='select name from stations where name like "%'
-get_names+="$1"
-get_names+='%"'
-
 get_names_with_id='select ROWID, name from stations where name like "%'
 get_names_with_id+="$1"
 get_names_with_id+='%"'
@@ -158,7 +154,6 @@ case $1 in
 				printStations "$tags"
 				exit 0
 			fi
-		fi
 		;;
 	-lr|--list-regions)
 		location="$("$sqlite" "$db" "$get_all_location")"
