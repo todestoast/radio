@@ -25,7 +25,7 @@ if [[ "$1" == "-x" ]];then
 	 if [ -z "$2" ]; then
 		echo "please pass proxy URL after argument -x"
 		exit 1
- 	else	
+ 	else
 		proxy="$2"
 		set -- $3 $4 $5
 	fi
@@ -97,7 +97,7 @@ get_all_location='select distinct location from stations'
 if [ -f ${path}/db.md5 ]; then
 	md5date=$(date +%s -r ${path}/db.md5)
 	today=$(date +%s)
-	datediff=$(($today-$md5date))
+	datediff=$((today-md5date))
 	if [ $datediff -gt 86471 ]; then
 		#file is older than 1 day
 		echo "checking for new stations..."
@@ -240,7 +240,7 @@ case $1 in
 		echo
 		echo "-rp --recently-played"
 		echo "list 10 last played stations (newest first)"
-		echo 
+		echo
 		echo "-x"
 		echo "use proxy for playing streams pass proxy in following format http_proxy://url:port"
 		echo "example: radio -x http_proxy://proxy:8080 random"
