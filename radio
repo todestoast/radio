@@ -156,12 +156,10 @@ case $1 in
 			fi
 		;;
 	-lr|--list-regions)
-		"$sqlite" "$db" "$get_all_location"
-		exit 0
+		exec "$sqlite" "$db" "$get_all_location"
 		;;
 	-rp|--recently-played)
-		"$sqlite" "$db" "$get_recently_played"
-		exit 0
+		exec "$sqlite" "$db" "$get_recently_played"
 		;;
 	-r|--region)
 	[ -z "$2" ] && die "Pass a region you want to search for"
@@ -169,8 +167,7 @@ case $1 in
 	if [[ "$3" == "random" ]]; then
 		url="$("$sqlite" "$db" "$get_random_for_loc")"
 	else
-		"$sqlite" "$db" "$get_stations_for_loc"
-		exit 0
+		exec "$sqlite" "$db" "$get_stations_for_loc"
 	fi
 	;;
 	-b|--backup)
@@ -183,8 +180,7 @@ case $1 in
 	fi
 	;;
 	-mp|--most-played)
-		"$sqlite" "$db" "$get_most_played"
-		exit 0
+		exec "$sqlite" "$db" "$get_most_played"
 		;;
 	-h|--help)
 		echo "usage: radio <stationname>"
