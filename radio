@@ -188,8 +188,7 @@ case $1 in
 		echo "Updating radio Script at $location... "
 		cd /tmp/ || die "can't cd to /tmp"
 		wget -q https://raw.githubusercontent.com/todestoast/radio/master/radio
-		mv radio $location
-		[[ $? =! 0 ]] && die "Unable to move updated version of the script to $location. You can find it at /tmp/"
+		mv radio $location || die "Unable to move updated version of the script to $location. You can find it at /tmp/"
 		exit 0
 	;;
 		#make -p also work with the ID and the backup stream
