@@ -194,6 +194,7 @@ case $1 in
 			sudo mv radio $location || die "Unable to move updated version of the script to $location. You can find it at /tmp/radio"
 			sudo chmod a+x $location
 		fi
+		echo "Script sucessfully updated"
 		exit 0
 	;;
 		#make -p also work with the ID and the backup stream
