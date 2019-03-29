@@ -182,6 +182,16 @@ case $1 in
 	-mp|--most-played)
 		exec "$sqlite" "$db" "$get_most_played"
 	;;
+	-u|--update)
+		location=$(which $0)
+		[[ "$location" == "" ]] && die "Location of Script could not be identified, please include it in your PATH variable"
+		echo "Updating radio Script at $location... "
+		cd /tmp/ || die "can't cd to /tmp"
+		wget -q https://raw.githubusercontent.com/todestoast/radio/master/radio
+		mv radio $location
+		[[ $? =! 0 ]] && die "Unable to move updated version of the script to $location. You can find it at /tmp/"
+		exit 0
+	;;
 		#make -p also work with the ID and the backup stream
 	-p|--print)
 		if isnumerical "$2"; then
@@ -245,6 +255,9 @@ case $1 in
 		echo
 		echo "-rp --recently-played"
 		echo "list 10 last played stations (newest first)"
+		echo
+		echo "-u --update"
+		echo "updates the script itself. Caution: Every changes you might have done to the script yourself will be lost!"
 		echo
 		echo "-x"
 		echo "use proxy for playing streams pass proxy in following format http_proxy://url:port"
