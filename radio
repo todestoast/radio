@@ -186,6 +186,7 @@ case $1 in
 		location=$(which $0)
 		[[ "$location" == "" ]] && die "Location of Script could not be identified, please include it in your PATH variable"
 		echo "Updating radio Script at $location... "
+		echo
 		cd /tmp/ || die "can't cd to /tmp"
 		wget -q https://raw.githubusercontent.com/todestoast/radio/master/radio
 		mv radio $location
