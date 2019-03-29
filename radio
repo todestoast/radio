@@ -288,6 +288,6 @@ set_history+="'$name'"
 set_history+=','
 set_history+=$playtime
 set_history+=')'
-[[ "$name" != "" && "$playtime" != "" ]] &&  $sqlite" "$db" "$set_history"
+[[ "$name" != "" && "$playtime" != "" ]] &&  "$sqlite" "$db" "$set_history"
 
 exit 0
