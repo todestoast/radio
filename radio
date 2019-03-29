@@ -191,6 +191,7 @@ case $1 in
 		mv radio $location
 		if [ $? -ne 0 ]; then
 			echo  "Unable to move updated version of the script to $location. Retrying with sudo..."
+			echo
 			sudo mv radio $location || die "Unable to move updated version of the script to $location. You can find it at /tmp/radio"
 			sudo chmod a+x $location
 		fi
@@ -265,7 +266,7 @@ case $1 in
 		echo "updates the script itself. Caution: Every changes you might have done to the script yourself will be lost!"
 		echo
 		echo "-x"
-		echo "use proxy for playing streams pass proxy in following format http_proxy://url:port"
+		echo "use proxy for playing streams. Pass proxy in following format http_proxy://url:port"
 		echo "example: radio -x http_proxy://proxy:8080 random"
 		echo
 		exit 0

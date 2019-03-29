@@ -47,7 +47,7 @@ list 10 last played stations (newest first)<br />
 updates the script itself. Caution: Every changes you might have done to the script yourself will be lost!<br />
 
 -x<br />
-use proxy for playing streams pass proxy in following format <i>http_proxy://url:port</i><br />
+use proxy for playing streams. Pass proxy in following format <i>http_proxy://url:port</i><br />
 example: <code>radio -x http_proxy://proxy:8080 random</code><br />
 
 # installation
