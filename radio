@@ -101,9 +101,10 @@ get_most_played='select name from history order by playtime desc limit 9'
 
 get_all_location='select distinct location from stations'
 
+today=$(date +%s)
+
 if [ -f "${path}/db.md5" ]; then
 	md5date=$(date +%s -r "${path}/db.md5")
-	today=$(date +%s)
 	datediff=$((today-md5date))
 	if [ $datediff -gt 86471 ]; then
 		#file is older than 1 day
