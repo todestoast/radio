@@ -192,6 +192,7 @@ case $1 in
 		if [ $? -ne 0 ]; then
 			echo  "Unable to move updated version of the script to $location. Retrying with sudo..."
 			sudo mv radio $location || die "Unable to move updated version of the script to $location. You can find it at /tmp/radio"
+			sudo chmod a+x $location
 		fi
 		exit 0
 	;;
