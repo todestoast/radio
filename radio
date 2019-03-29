@@ -97,7 +97,7 @@ get_tag+="$2"
 get_tag+='%"'
 
 get_recently_played='select name from history order by rowid desc limit 9'
-get_most_played='select name from history order by playtime desc limit 9'
+get_most_played='select name from (select name, sum(playtime) Zeit from history group by name order by zeit desc) limit 9;'
 
 get_all_location='select distinct location from stations'
 
