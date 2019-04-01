@@ -97,7 +97,7 @@ get_tag+="$2"
 get_tag+='%"'
 
 get_recently_played='select name from history order by rowid desc limit 9'
-get_most_played='select name from (select name, sum(playtime) Zeit from history group by name order by zeit desc) limit 9;'
+get_most_played='select name from history group by name order by sum(playtime) desc limit 9'
 
 get_all_location='select distinct location from stations'
 
@@ -112,7 +112,7 @@ if [ -f "${path}/db.md5" ]; then
 		echo
 		cd /tmp/ || die "can't cd to /tmp"
 		wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
-		if [ $(diff /tmp/db.md5 "${path}/db.md5" | wc -l) -gt 1 ]; then
+		if ! cmp -s /tmp/db.md5 "${path}/db.md5" ; then
 			#different sum, download db
 			echo "new stations found. downloading..."
 			cd "$path" || die "can't cd to $path"
@@ -123,6 +123,8 @@ if [ -f "${path}/db.md5" ]; then
 			rm backup.csv
 			echo "new stations added"
 			mv /tmp/db.md5 "${path}/db.md5"
+		else
+			rm -f /tmp/db.md5
 		fi
 	fi
 else
