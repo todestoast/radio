@@ -123,9 +123,8 @@ if [ -f "${path}/db.md5" ]; then
 			rm backup.csv
 			echo "new stations added"
 			mv /tmp/db.md5 "${path}/db.md5"
-		else
-			rm -f /tmp/db.md5
 		fi
+		rm -f /tmp/db.md5
 	fi
 else
 	echo "Missing file. Downloading..."
