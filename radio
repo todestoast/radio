@@ -296,11 +296,8 @@ else
 	name="$("$sqlite" "$db" "$get_name_for_url")"
 	echo "Playing $name"
 	echo
-	if [ -z $proxy ]; then
-		 mplayer -quiet "$url" 2>&1 | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
-	else
-		mplayer "${proxy}/$url" | sed -nu '/^ICY/ p' | sed 's/StreamUrl\=.*\;//'
-	fi
+	[ -z "$proxy" ] || url="${proxy}/$url"
+	mplayer -quiet "$url" 2>&1 | sed -nu "s/^ICY.*StreamTitle='\([^;]*\)';.*/\1/p"
 fi
 end=$(date +%s)
 playtime=$(((end-today)/60))
