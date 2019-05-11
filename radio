@@ -38,7 +38,7 @@ if [[ "$1" == "-x" ]];then
 		exit 1
  	else
 		proxy="$2"
-		set -- $3 $4 $5
+		set -- "$3" "$4" "$5"
 	fi
 fi
 
@@ -184,19 +184,18 @@ case $1 in
 		exec "$sqlite" "$db" "$get_most_played"
 	;;
 	-u|--update)
-		location=$(which $0)
+		location="$(command -v "$0")"
 		[[ "$location" == "" ]] && die "Location of Script could not be identified, please include it in your PATH variable"
 		echo "Updating radio Script at $location... "
 		echo
 		cd /tmp/ || die "can't cd to /tmp"
 		wget -q https://raw.githubusercontent.com/todestoast/radio/master/radio
-		mv radio $location
-		if [ $? -ne 0 ]; then
+		mv radio "$location" || {
 			echo  "Unable to move updated version of the script to $location. Retrying with sudo..."
 			echo
-			sudo mv radio $location || die "Unable to move updated version of the script to $location. You can find it at /tmp/radio"
-			sudo chmod a+x $location
-		fi
+			sudo mv radio "$location" || die "Unable to move updated version of the script to $location. You can find it at /tmp/radio"
+			sudo chmod a+x "$location"
+		}
 		echo "Script sucessfully updated"
 		exit 0
 	;;
@@ -284,7 +283,7 @@ if [ ${#url}  -eq 0 ]; then
 fi
 
 #if string contains newlines therefore multiple urls
-if [ $(echo "$url" | wc -l) -gt 1 ]; then
+if [ "$( wc -l <<<"$url" )" -gt 1 ]; then
 	#select names
 	#echo $get_names_with_id
 	printStations "$get_names_with_id"
