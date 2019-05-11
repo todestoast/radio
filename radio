@@ -33,13 +33,9 @@ function restorehistory() {
 }
 
 if [[ "$1" == "-x" ]];then
-	 if [ -z "$2" ]; then
-		echo "please pass proxy URL after argument -x"
-		exit 1
- 	else
-		proxy="$2"
-		set -- "$3" "$4" "$5"
-	fi
+	 [ -z "$2" ] && die "please pass proxy URL after argument -x"
+	proxy="$2"
+	set -- "$3" "$4" "$5"
 fi
 
 get_url='select url from stations where name like "%'
