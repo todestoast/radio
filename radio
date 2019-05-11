@@ -288,16 +288,17 @@ if [ "$( wc -l <<<"$url" )" -gt 1 ]; then
 	#echo $get_names_with_id
 	printStations "$get_names_with_id"
 	exit 1;
-else
-	get_name_for_url='select name from stations where url="'
-	get_name_for_url+="$url"
-	get_name_for_url+='"'
-	name="$("$sqlite" "$db" "$get_name_for_url")"
-	echo "Playing $name"
-	echo
-	[ -z "$proxy" ] || url="${proxy}/$url"
-	mplayer -quiet "$url" 2>&1 | sed -nu "s/^ICY.*StreamTitle='\([^;]*\)';.*/\1/p"
 fi
+
+get_name_for_url='select name from stations where url="'
+get_name_for_url+="$url"
+get_name_for_url+='"'
+name="$("$sqlite" "$db" "$get_name_for_url")"
+echo "Playing $name"
+echo
+[ -z "$proxy" ] || url="${proxy}/$url"
+mplayer -quiet "$url" 2>&1 | sed -nu "s/^ICY.*StreamTitle='\([^;]*\)';.*/\1/p"
+
 end=$(date +%s)
 playtime=$(((end-today)/60))
 set_history='insert into history values('
