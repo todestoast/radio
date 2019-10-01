@@ -88,6 +88,7 @@ please check 'requirements' before running any command
 - git
 - gcc
 - unzip
+- wget
 
 ## for running the software
 - mplayer
