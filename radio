@@ -24,6 +24,25 @@ function printStations() {
 	echo -e "${outtext//|/\\t}"
 }
 
+function addinteractive() {
+	echo "Interactive Mode for adding a station"
+	echo
+	echo -n "Station name: "
+	read name
+	echo -n "Streaming URL: "
+	read url1
+	echo -n "(Optional) Backup-Streaming URL (Just press enter to skip): "
+	read url2
+	echo -n "Location of the station: "
+	read loc
+	echo -n "Tags for the station (e.g.: 80s, news, chillout): "
+	read tags
+	
+	#restart script with the parameters
+	bash "$0" "-a" "$name" "$url1" "$url2" "$loc" "$tags" && exit 0
+	
+}
+
 function backuphistory() {
 	"$sqlite" "$db" < "${path}/backup_commands"
 }
@@ -37,6 +56,18 @@ if [[ "$1" == "-x" ]]; then
 	proxy="$2"
 	set -- "$3" "$4" "$5" #read: set params 3 - 5 as params 1 - 3
 fi
+
+add_station='insert into stations values('
+add_station+="'$2'"
+add_station+=','
+add_station+="'$3'"
+add_station+=','
+add_station+="'$4'"
+add_station+=','
+add_station+="'$5'"
+add_station+=','
+add_station+="'$6'"
+add_station+=')'
 
 get_url='select url from stations where name like "%'
 get_url+="$1"
@@ -148,6 +179,11 @@ case $1 in
 			url=$("$sqlite" "$db" "$get_random_except")	
 		fi
 		;;
+	-a|--add)
+		[ -z "$2" ] && addinteractive
+		[[ -n "$6" && "$2" != "" && "$3" != "" ]] && echo "adding station..." && "$sqlite" "$db" "$add_station" && exit 0
+		die "Error adding Station. Maybe you didn't provide a needed parameter. \nFor more information see --help"
+		;;
 	-la|--list-all)
 		printStations "$get_stations"
 		exit 0
@@ -235,6 +271,21 @@ case $1 in
 		echo "To play a random station: radio random"
 		echo "If you want to exclude stations with 'word' in their name from random:"
 		echo "radio random -X word"
+		echo
+		echo "-a --add"
+		echo "add a station to local database. If called without any other parameter an interactive dialog guides you through the process of adding a station"
+		echo "For not using the interactive version provide the following parameters: "
+		echo "name (must not be empty)"
+		echo "Stream URL (must not be empty)"
+		echo "Backup-Stream URL"
+		echo "Location of the station"
+		echo "Tags"
+		echo 
+		echo "To prevent any issues with special characters I strongly recommend to quote every parameter (see example)"
+		echo 'To leave a parameter empty just use ""'
+		echo
+		echo 'example: radio -a "Radio Station 2000" "http://streamingurl:8000" "" "Location" "club, dance, techno"'
+		echo "in this example the value for the Backup-Stream URL is left empty"
 		echo
 		echo "-b --backup"
 		echo "play backup stream (if exists). Might help if the primary streaming URL is not working"

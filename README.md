@@ -10,6 +10,21 @@ To play a random station: <code>radio random</code><br />
 If you want to exclude stations with <i>word</i> in their name from random:<br />
 <code>radio random -X <i>word</i></code><br />
 
+-a --add<br />
+add a station to local database. If called without any other parameter an interactive dialog guides you through the process of adding a station<br />
+For not using the interactive version provide the following parameters: <br />
+name (must not be empty)<br />
+Stream URL (must not be empty)<br />
+Backup-Stream URL<br />
+Location of the station<br />
+Tags<br />
+To prevent any issues with special characters I strongly recommend to quote every parameter (see example)<br />
+To leave a parameter empty just use ""<br />
+<br />
+example: <code>radio -a "Radio Station 2000" "http://streamingurl:8000" "" "San Francisco, USA" "club, dance, techno"</code><br />
+<br />
+in this example the value for the Backup-Stream URL is left empty<br />
+
 -b --backup<br />
 play backup stream (if exists). Might help if the primary streaming URL is not working
 
