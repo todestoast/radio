@@ -274,7 +274,8 @@ case $1 in
 		echo
 		echo "-a --add"
 		echo "add a station to local database. If called without any other parameter an interactive dialog guides you through the process of adding a station"
-		echo "For not using the interactive version provide the following parameters: "
+		echo "For not using the interactive version provide the following parameters (in this exact order): "
+		echo
 		echo "name (must not be empty)"
 		echo "Stream URL (must not be empty)"
 		echo "Backup-Stream URL"

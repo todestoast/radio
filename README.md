@@ -12,12 +12,14 @@ If you want to exclude stations with <i>word</i> in their name from random:<br /
 
 -a --add<br />
 add a station to local database. If called without any other parameter an interactive dialog guides you through the process of adding a station<br />
-For not using the interactive version provide the following parameters: <br />
+For not using the interactive version provide the following parameters (in this exact order): <br />
+<br />
 name (must not be empty)<br />
 Stream URL (must not be empty)<br />
 Backup-Stream URL<br />
 Location of the station<br />
 Tags<br />
+<br />
 To prevent any issues with special characters I strongly recommend to quote every parameter (see example)<br />
 To leave a parameter empty just use ""<br />
 <br />
