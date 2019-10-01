@@ -95,3 +95,7 @@ please check 'requirements' before running any command
 ## for running the software
 - mplayer
 - sqlite3 (if you install the software with the installer script sqlite is already installed)
+
+# ensure integrity
+## check urls in database
+run url_checker.sh it will print out any URL with HTTP response 404
