@@ -6,7 +6,9 @@ usage: <code>radio <i>stationname</i></code><br />
 example: <code>radio kexp</code><br />
 Or use the unique ID of every station: <code>radio <i>ID</i></code><br />
 To get the ID for example search for a tag.<br /><br />
-Also possible: <code>radio random</code>
+To play a random station: <code>radio random</code><br />
+If you want to exclude stations with <i>word</i> in their name from random:<br />
+<code>radio random -X <i>word</i></code><br />
 
 -b --backup<br />
 play backup stream (if exists). Might help if the primary streaming URL is not working

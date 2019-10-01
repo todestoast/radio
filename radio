@@ -232,7 +232,9 @@ case $1 in
 		echo "Or use the unique ID of every station: radio <ID>"
 		echo "To get the ID for example search for a tag."
 		echo ""
-		echo "Also possible: radio random"
+		echo "To play a random station: radio random"
+		echo "If you want to exclude stations with 'word' in their name from random:"
+		echo "radio random -X word"
 		echo
 		echo "-b --backup"
 		echo "play backup stream (if exists). Might help if the primary streaming URL is not working"
