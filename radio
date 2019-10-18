@@ -45,11 +45,37 @@ function addinteractive() {
 }
 
 function backuphistory() {
+	[[ ! -f "${path}/backup_commands" ]] && cd "$path" && wget -q https://raw.githubusercontent.com/todestoast/radio/master/backup_commands
 	"$sqlite" "$db" < "${path}/backup_commands"
 }
 
 function restorehistory() {
+	[[ ! -f "${path}/restore_commands" ]] && cd "$path" && wget -q https://raw.githubusercontent.com/todestoast/radio/master/restore_commands
 	"$sqlite" "$db" < "${path}/restore_commands"
+}
+
+function updateDB() {
+	md5date=$(date +%s -r "${path}/db.md5")
+	datediff=$((today-md5date))
+	if [ $datediff -gt 86471 ]; then
+		#file is older than 1 day
+		echo "checking for new stations..."
+		echo
+		cd /tmp/ || die "can't cd to /tmp"
+		wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
+		if ! cmp -s /tmp/db.md5 "${path}/db.md5" ; then
+			#different sum, download db
+			echo "new stations found. downloading..."
+			cd "$path" || die "can't cd to $path"
+			backuphistory
+			rm radio.db
+			wget -q https://github.com/todestoast/radio/raw/master/radio.db
+			restorehistory
+			rm backup.csv
+			echo "new stations added"
+		fi
+		mv /tmp/db.md5 "${path}/db.md5"
+	fi
 }
 
 if [[ "$1" == "-x" ]]; then
@@ -138,34 +164,14 @@ today=$(date +%s)
 
 [[ ! -d "$path" ]] && die "path $path does not exist"
 
-if [ -f "${path}/db.md5" ]; then
-	md5date=$(date +%s -r "${path}/db.md5")
-	datediff=$((today-md5date))
-	if [ $datediff -gt 86471 ]; then
-		#file is older than 1 day
-		echo "checking for new stations..."
-		echo
-		cd /tmp/ || die "can't cd to /tmp"
-		wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
-		if ! cmp -s /tmp/db.md5 "${path}/db.md5" ; then
-			#different sum, download db
-			echo "new stations found. downloading..."
-			cd "$path" || die "can't cd to $path"
-			backuphistory
-			rm radio.db
-			wget -q https://github.com/todestoast/radio/raw/master/radio.db
-			restorehistory
-			rm backup.csv
-			echo "new stations added"
-		fi
-		mv /tmp/db.md5 "${path}/db.md5"
-	fi
-else
+if [[ ! -f "${path}/db.md5" ]]; then
 	echo "Missing file. Downloading..."
 	cd "$path" || die "can't cd to $path"
 	wget -q https://raw.githubusercontent.com/todestoast/radio/master/db.md5
 	[ -f "${path}/radio.db" ] || wget -q https://github.com/todestoast/radio/raw/master/radio.db
 fi
+
+updateDB
 
 [ -z "$1" ] && die "see --help for usage"
 
@@ -233,7 +239,7 @@ case $1 in
 		echo
 		cd /tmp/ || die "can't cd to /tmp"
 		wget -q https://raw.githubusercontent.com/todestoast/radio/master/radio
-		mv radio "$location" || {
+		mv radio "$location" 2> /dev/null || {
 			echo  "Unable to move updated version of the script to $location. Retrying with sudo..."
 			echo
 			sudo mv radio "$location" || die "Unable to move updated version of the script to $location. You can find it at /tmp/radio"
