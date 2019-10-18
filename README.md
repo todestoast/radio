@@ -28,7 +28,12 @@ example: <code>radio -a "Radio Station 2000" "http://streamingurl:8000" "" "San 
 in this example the value for the Backup-Stream URL is left empty<br />
 
 -b --backup<br />
-play backup stream (if exists). Might help if the primary streaming URL is not working
+play backup stream (if exists). Might help if the primary streaming URL is not working<br />
+
+-d --dump<br />
+dump radop stream instead of playing. pass id or word as usual + duration of dump.<br />
+example: <code>radio -d 25 30</code> dumps the stream of the station with id 25 for 30 minutes<br />
+the dump can be found at ./stream.dump<br />
 
 -h --help<br />
 displays this help menu
