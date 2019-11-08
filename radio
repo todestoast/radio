@@ -241,7 +241,7 @@ case $1 in
 		exec "$sqlite" "$db" "$get_most_played"
 	;;
 	-u|--update)
-		location="$(which "$0")"
+		location="$(command -v "$0")"
 		[[ "$location" == "" ]] && die "Location of Script could not be identified, please include it in your PATH variable"
 		echo "Updating radio Script at $location... "
 		echo
