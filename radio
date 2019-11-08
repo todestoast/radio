@@ -381,8 +381,9 @@ echo
 [ -z "$proxy" ] || url="${proxy}/$url"
 if [[ $dumptime > 0 ]]; then
 	mplayer -dumpstream "$url" & 
+	MPLAYER_PID=$!
 	sleep "$dumptime"m
-	killall mplayer
+	kill $MPLAYER_PID
 else
 	mplayer -quiet "$url" 2>&1 | sed -nu "s/^ICY.*StreamTitle='\([^;]*\)';.*/\1/p"
 fi
