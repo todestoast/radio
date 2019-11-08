@@ -29,15 +29,15 @@ function addinteractive() {
 	echo "Interactive Mode for adding a station"
 	echo
 	echo -n "Station name: "
-	read name
+	read -r name
 	echo -n "Streaming URL: "
-	read url1
+	read -r url1
 	echo -n "(Optional) Backup-Streaming URL (Just press enter to skip): "
-	read url2
+	read -r url2
 	echo -n "Location of the station: "
-	read loc
+	read -r loc
 	echo -n "Tags for the station (e.g.: 80s, news, chillout): "
-	read tags
+	read -r tags
 	
 	#restart script with the parameters
 	bash "$0" "-a" "$name" "$url1" "$url2" "$loc" "$tags" && exit 0
@@ -379,7 +379,7 @@ echo
 
 
 [ -z "$proxy" ] || url="${proxy}/$url"
-if [[ $dumptime > 0 ]]; then
+if [[ $dumptime -gt 0 ]]; then
 	mplayer -dumpstream "$url" & 
 	MPLAYER_PID=$!
 	sleep "$dumptime"m
