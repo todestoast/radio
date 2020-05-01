@@ -38,10 +38,10 @@ function addinteractive() {
 	read loc
 	echo -n "Tags for the station (e.g.: 80s, news, chillout): "
 	read tags
-	
+
 	#restart script with the parameters
 	bash "$0" "-a" "$name" "$url1" "$url2" "$loc" "$tags" && exit 0
-	
+
 }
 
 function backuphistory() {
@@ -191,7 +191,7 @@ case $1 in
 		url=$("$sqlite" "$db" "$get_random")
 		if [[ "$2" == "-X" ]]; then
 			[ -z "$3" ] && die "Pass a word you want to search for"
-			url=$("$sqlite" "$db" "$get_random_except")	
+			url=$("$sqlite" "$db" "$get_random_except")
 		fi
 		;;
 	-a|--add)
@@ -296,7 +296,7 @@ case $1 in
 		echo "Backup-Stream URL"
 		echo "Location of the station"
 		echo "Tags"
-		echo 
+		echo
 		echo "To prevent any issues with special characters I strongly recommend to quote every parameter (see example)"
 		echo 'To leave a parameter empty just use ""'
 		echo
@@ -380,11 +380,11 @@ echo
 
 [ -z "$proxy" ] || url="${proxy}/$url"
 if [[ $dumptime > 0 ]]; then
-	mplayer -dumpstream "$url" & 
+	mplayer -dumpstream "$url" &
 	sleep "$dumptime"m
 	killall mplayer
 else
-	mplayer -quiet "$url" 2>&1 | sed -nu "s/^ICY.*StreamTitle='\([^;]*\)';.*/\1/p"
+	mplayer -quiet -cache 100 "$url" 2>&1 | sed -nu "s/^ICY.*StreamTitle='\([^;]*\)';.*/\1/p"
 fi
 
 end=$(date +%s)
