@@ -380,12 +380,16 @@ echo
 
 
 [ -z "$proxy" ] || url="${proxy}/$url"
-if [[ $dumptime > 0 ]]; then
+if [[ $dumptime > 0 ]]
+then
 	mplayer -dumpstream "$url" &
 	sleep "$dumptime"m
 	killall mplayer
-else
+elif [[ "$url" != *".aac"* ]]
+then
 	mplayer -quiet -cache 100 "$url" 2>&1 | sed -nu "s/^ICY.*StreamTitle='\([^;]*\)';.*/\1/p" | tee /tmp/radio.current
+else
+	mpv --quiet "$url" 2>&1 | sed -nu '/icy-title/p' | sed -nu 's/^.*: //p' | tee /tmp/radio.current
 fi
 
 end=$(date +%s)

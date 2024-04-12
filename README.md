@@ -100,6 +100,7 @@ please check 'requirements' before running any command
 ## for running the software
 - mplayer
 - sqlite3 (if you install the software with the installer script sqlite is already installed)
+- mpv (currently used for playing aac streams - I am happy for any solution on how to get it working with mplayer)
 
 # ensure integrity
 ## check urls in database
